@@ -1,44 +1,47 @@
-# Pitch (3 minutos)
+# Pitch do Projeto — PlannerPro
 
-> [!TIP]
-> Você pode usar alguns slides pra apoiar no seu Pitch e mostrar sua solução na prática.
- 
-## Roteiro Sugerido
+## 1. Problema (30 segundos)
 
-### 1. O Problema (30 seg)
-> Qual dor do cliente você resolve?
-
-[Sua descrição aqui]
-
-### 2. A Solução (1 min)
-> Como seu agente resolve esse problema?
-
-[Sua descrição aqui]
-
-### 3. Demonstração (1 min)
-> Mostre o agente funcionando (pode ser gravação de tela)
-
-[Descreva o que será mostrado]
-
-### 4. Diferencial e Impacto (30 seg)
-> Por que essa solução é inovadora e qual é o impacto dela na sociedade?
-
-[Sua descrição aqui]
+Muitas pessoas têm o desejo de montar um escritório em casa, mas não conseguem organizar suas finanças de forma clara para atingir esse objetivo. A falta de planejamento financeiro estruturado faz com que metas simples se tornem difíceis de alcançar, especialmente quando o orçamento é limitado.
 
 ---
 
-## Checklist do Pitch
+## 2. Solução (1 minuto)
 
-- [ ] Duração máxima de 3 minutos
-- [ ] Problema claramente definido
-- [ ] Solução demonstrada na prática
-- [ ] Diferencial explicado
-- [ ] Áudio e vídeo com boa qualidade
+O PlannerPro é um agente financeiro inteligente desenvolvido com IA generativa que ajuda o usuário a planejar a construção de um escritório em casa.
+
+Ele analisa transações financeiras reais, identifica padrões de gastos e auxilia o usuário a entender quanto pode economizar mensalmente para atingir sua meta.
+
+O agente não apenas responde perguntas, mas também orienta o planejamento financeiro de forma prática e objetiva, sempre baseado nos dados fornecidos pelo usuário.
 
 ---
 
-## Link do Vídeo
+## 3. Demonstração / Como funciona (1 minuto)
 
-> Cole aqui o link do seu pitch (YouTube, Loom, Google Drive, etc.)
+A aplicação é construída em Python e utiliza a API do Gemini para gerar respostas inteligentes.
 
-[Link do vídeo]
+O sistema:
+- Carrega dados de transações financeiras em CSV
+- Processa esses dados para gerar contexto financeiro
+- Recebe perguntas do usuário via terminal
+- Gera respostas baseadas no perfil financeiro e na meta definida
+
+Tudo funciona em tempo real, simulando um assistente financeiro interativo.
+
+---
+
+## 4. Diferencial e próximos passos (30 segundos)
+
+O diferencial do PlannerPro é sua abordagem focada em um objetivo específico: planejamento de um escritório em casa, tornando as recomendações mais direcionadas e úteis.
+
+Como próximos passos, o sistema pode evoluir para:
+- Interface web com Streamlit
+- Integração com dados bancários reais
+- Expansão para múltiplos tipos de metas financeiras
+- Análise preditiva de gastos
+
+---
+
+## Conclusão
+
+O PlannerPro demonstra como a IA generativa pode ser aplicada de forma prática para transformar dados financeiros em decisões inteligentes e acessíveis.
