@@ -1,55 +1,43 @@
 # Base de Conhecimento
 
-## Dados Utilizados
+## Visão Geral
+O agente utiliza dados estruturados para apoiar o planejamento financeiro do usuário, com foco na construção de um escritório em casa. A base de conhecimento é composta por arquivos locais em formato CSV.
 
-Descreva se usou os arquivos da pasta `data`, por exemplo:
+## Fontes de Dados Utilizadas
 
-| Arquivo | Formato | Utilização no Agente |
-|---------|---------|---------------------|
-| `historico_atendimento.csv` | CSV | Contextualizar interações anteriores |
-| `perfil_investidor.json` | JSON | Personalizar recomendações |
-| `produtos_financeiros.json` | JSON | Sugerir produtos adequados ao perfil |
-| `transacoes.csv` | CSV | Analisar padrão de gastos do cliente |
+### 1. transacoes.csv
+Contém o histórico financeiro do usuário, incluindo receitas e despesas.
 
-> [!TIP]
-> **Quer um dataset mais robusto?** Você pode utilizar datasets públicos do [Hugging Face](https://huggingface.co/datasets) relacionados a finanças, desde que sejam adequados ao contexto do desafio.
+**Principais campos esperados:**
+- data
+- tipo (receita/despesa)
+- valor
+- categoria
+- descricao
 
----
+## Estratégia de Uso dos Dados
 
-## Adaptações nos Dados
+O agente utiliza o arquivo `transacoes.csv` para:
 
-> Você modificou ou expandiu os dados mockados? Descreva aqui.
+- Analisar padrões de gastos do usuário
+- Identificar possíveis economias mensais
+- Calcular quanto o usuário pode destinar para atingir sua meta
+- Apoiar a criação de um plano financeiro para montagem do escritório
 
-[Sua descrição aqui]
+## Adaptações Realizadas
 
----
+Foi introduzido o conceito de **meta financeira**, que representa o valor necessário para construir o escritório em casa.
 
-## Estratégia de Integração
+Essa meta pode ser:
+- Informada diretamente pelo usuário
+- Ou estimada com base em categorias relevantes (ex: móveis, equipamentos, iluminação)
 
-### Como os dados são carregados?
-> Descreva como seu agente acessa a base de conhecimento.
+## Acesso aos Dados
 
-[ex: Os JSON/CSV são carregados no início da sessão e incluídos no contexto do prompt]
+Os dados são carregados localmente pela aplicação em Python, utilizando bibliotecas como `pandas` para leitura do CSV.
 
-### Como os dados são usados no prompt?
-> Os dados vão no system prompt? São consultados dinamicamente?
+Exemplo de carregamento:
+```python
+import pandas as pd
 
-[Sua descrição aqui]
-
----
-
-## Exemplo de Contexto Montado
-
-> Mostre um exemplo de como os dados são formatados para o agente.
-
-```
-Dados do Cliente:
-- Nome: João Silva
-- Perfil: Moderado
-- Saldo disponível: R$ 5.000
-
-Últimas transações:
-- 01/11: Supermercado - R$ 450
-- 03/11: Streaming - R$ 55
-...
-```
+df = pd.read_csv("data/transacoes.csv")
