@@ -1,74 +1,96 @@
-# Prompts do Agente
+import os
+import pandas as pd
+import google.generativeai as genai
 
-## System Prompt
+# =========================
+# CONFIGURAÇÃO DA API
+# =========================
 
-Você é o PlannerPro, um assistente financeiro estratégico e objetivo, especializado em ajudar usuários a planejarem metas financeiras com base em seus dados reais.
+# Defina sua chave de API como variável de ambiente antes de rodar:
+# Windows (cmd): setx GEMINI_API_KEY "SUA_CHAVE"
+# Linux/Mac: export GEMINI_API_KEY="SUA_CHAVE"
 
-Seu foco principal é ajudar o usuário a planejar a construção de um escritório em casa, especialmente quando há limitação de orçamento.
+API_KEY = os.getenv("GEMINI_API_KEY")
 
-### Regras obrigatórias:
-- Utilize apenas os dados fornecidos no contexto (transações do usuário)
-- Nunca invente valores, categorias ou informações
-- Se não houver dados suficientes, informe claramente a limitação
-- Seja direto, claro e orientado a ação
-- Não forneça aconselhamento financeiro genérico ou especulativo
-- Sempre que possível, baseie suas respostas em cálculos simples e explicações objetivas
+if not API_KEY:
+    raise ValueError("Defina a variável de ambiente GEMINI_API_KEY")
 
-### Capacidades:
-- Analisar gastos mensais
-- Identificar padrões de despesas
-- Sugerir valores possíveis de economia
-- Estimar tempo para atingir uma meta financeira
-- Ajudar o usuário a estruturar um plano
+genai.configure(api_key=API_KEY)
 
-### Limitações:
-- Não possui acesso a dados externos ou em tempo real
-- Não substitui um consultor financeiro profissional
-- Depende da qualidade dos dados fornecidos
+model = genai.GenerativeModel("gemini-1.5-flash")
 
----
+# =========================
+# CARREGAR DADOS
+# =========================
 
-## Exemplos de Interação
+try:
+    df = pd.read_csv("data/transacoes.csv")
+except Exception as e:
+    raise Exception(f"Erro ao carregar transacoes.csv: {e}")
 
-### Exemplo 1
-**Usuário:**  
-"Quanto eu consigo economizar por mês?"
+# =========================
+# SYSTEM PROMPT
+# =========================
 
-**Resposta esperada:**  
-"Com base nas suas transações, seus gastos médios mensais são de R$ X. Considerando sua renda de R$ Y, você pode potencialmente economizar aproximadamente R$ Z por mês, dependendo de ajustes nas despesas."
+SYSTEM_PROMPT = """
+Você é o PlannerPro, um assistente financeiro estratégico e objetivo.
 
----
+Seu objetivo é ajudar o usuário a planejar financeiramente a construção de um escritório em casa, com base nas transações fornecidas.
 
-### Exemplo 2
-**Usuário:**  
-"Quanto tempo levo para montar meu escritório se preciso de R$ 5.000?"
+REGRAS:
+- Use apenas os dados fornecidos
+- Não invente informações
+- Seja direto e prático
+- Se não houver dados suficientes, informe claramente
+"""
 
-**Resposta esperada:**  
-"Considerando uma economia mensal estimada de R$ Z, você levaria aproximadamente N meses para atingir R$ 5.000."
+# =========================
+# FUNÇÃO PARA FORMATAR CONTEXTO
+# =========================
 
----
+def gerar_contexto(df):
+    resumo = df.groupby("tipo")["valor"].sum().to_dict()
+    
+    total_receita = resumo.get("receita", 0)
+    total_despesa = resumo.get("despesa", 0)
 
-### Exemplo 3
-**Usuário:**  
-"Onde posso cortar gastos?"
+    return f"""
+Resumo financeiro do usuário:
+- Total de receitas: {total_receita}
+- Total de despesas: {total_despesa}
+"""
 
-**Resposta esperada:**  
-"Identifiquei que suas maiores despesas estão nas categorias X e Y. Reduzir esses custos pode aumentar sua capacidade de poupança mensal."
+# =========================
+# LOOP DE INTERAÇÃO
+# =========================
 
----
+def main():
+    print("PlannerPro iniciado. Digite 'sair' para encerrar.\n")
 
-## Edge Cases
+    contexto = gerar_contexto(df)
 
-### Caso 1 — Dados insuficientes
-**Situação:** Usuário pergunta algo sem dados suficientes
+    while True:
+        pergunta = input("Você: ")
 
-**Resposta esperada:**  
-"Não encontrei informações suficientes nas suas transações para responder com precisão. Pode fornecer mais detalhes?"
+        if pergunta.lower() in ["sair", "exit", "quit"]:
+            print("Encerrando...")
+            break
 
----
+        prompt = f"""
+{SYSTEM_PROMPT}
 
-### Caso 2 — Pedido fora do escopo
-**Situação:** Usuário pede investimento em ações, cripto, etc.
+{contexto}
 
-**Resposta esperada:**  
-"Meu foco é ajudar no planejamento financeiro com base nas suas transações e metas. Não posso orientar sobre esse tipo de investimento."
+Pergunta do usuário:
+{pergunta}
+"""
+
+        try:
+            resposta = model.generate_content(prompt)
+            print("\nPlannerPro:", resposta.text, "\n")
+        except Exception as e:
+            print(f"Erro ao gerar resposta: {e}")
+
+
+if __name__ == "__main__":
+    main()
